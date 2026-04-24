@@ -6,6 +6,8 @@ def main():
     while True:
         sys.stdout.write("$ ")
         user_input = input()
+        if user_input == "exit":
+            sys.exit()
         sys.stdout.write(user_input + ": " + "command not found" + "\n")
 
 if __name__ == "__main__":
