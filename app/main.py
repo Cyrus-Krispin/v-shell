@@ -15,17 +15,22 @@ def is_executable(program):
 
 def main():
 
-    builtin = {"type", "echo", "exit"}
+    builtin = {"type", "echo", "exit", "pwd"}
  
     while True:
+
         user_input = input("$ ").split()
         command = user_input[0]
         path = is_executable(command)
+
         match command:
+
             case "exit":
                 sys.exit()
+
             case "echo":
                 sys.stdout.write(" ".join(user_input[1:]) + "\n")
+                
             case "type":
                 for val in user_input[1:]: 
                     if val in builtin:
@@ -38,8 +43,12 @@ def main():
                         sys.stdout.write(val + " is " + val_path + "\n")     
                     else:
                         sys.stdout.write(val + ": not found" + "\n")
+
             case _ if path:
                 subprocess.run([command] + user_input[1:]) 
+
+            case "pwd":
+                sys.stdout.write(os.getcwd() + "\n")
  
             case _:
                 sys.stdout.write(command + ": command not found" + "\n")
