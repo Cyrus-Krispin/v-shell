@@ -15,7 +15,7 @@ def is_executable(program):
 
 def main():
 
-    builtin = {"type", "echo", "exit", "pwd"}
+    builtin = {"type", "echo", "exit", "pwd", "cd"}
  
     while True:
 
@@ -50,6 +50,13 @@ def main():
             case "pwd":
                 sys.stdout.write(os.getcwd() + "\n")
  
+            case "cd":
+                if user_input[1]:
+                    if os.path.isdir(user_input[1]):
+                        os.chdir(user_input[1])
+                    else:
+                        sys.stdout.write("cd: " + user_input[1] + ": No such file or directory" + "\n") 
+                
             case _:
                 sys.stdout.write(command + ": command not found" + "\n")
         
