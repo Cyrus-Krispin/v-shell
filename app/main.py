@@ -1,38 +1,48 @@
 import sys
 import os
+import subprocess
+
+def is_executable(program):
+    path_dirs = os.environ.get('PATH').split(os.pathsep)
+
+    for directory in path_dirs:
+        path = os.path.join(directory, program)
+
+        if os.path.isfile(path) and os.access(path, os.X_OK):
+            return path
+
+    return None
 
 def main():
 
     builtin = {"type", "echo", "exit"}
-
+ 
     while True:
         user_input = input("$ ").split()
         command = user_input[0]
+        path = is_executable(command)
         match command:
             case "exit":
                 sys.exit()
             case "echo":
                 sys.stdout.write(" ".join(user_input[1:]) + "\n")
             case "type":
-                found = False
                 for val in user_input[1:]: 
                     if val in builtin:
-                        sys.stdout.write(val + " is a shell builtin" + "\n") 
-                        found = True 
+                        sys.stdout.write(val + " is a shell builtin" + "\n")
+                        continue
+                    
+                    val_path = is_executable(val)
+
+                    if val_path:
+                        sys.stdout.write(val + " is " + val_path + "\n")     
                     else:
-                        path_dirs = os.environ.get('PATH').split(os.pathsep)
-                        for di in path_dirs:
-                            if os.path.isfile(di + "/" + val):
-                                if os.access(di + "/" + val, os.X_OK):
-                                    sys.stdout.write(val + " is " + di + "/" + val + "\n")
-                                    found = True
-                                    break
-                    if not found:
                         sys.stdout.write(val + ": not found" + "\n")
+            case _ if path:
+                subprocess.run([command] + user_input[1:]) 
  
             case _:
                 sys.stdout.write(command + ": command not found" + "\n")
-        
         
 if __name__ == "__main__":
     main()
