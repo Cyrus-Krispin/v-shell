@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import shlex
 
 def is_executable(program):
     path_dirs = os.environ.get('PATH').split(os.pathsep)
@@ -19,7 +20,8 @@ def main():
  
     while True:
 
-        user_input = input("$ ").split()
+        user_input = input("$ ")
+        user_input = shlex.split(user_input)
         command = user_input[0]
         path = is_executable(command)
 
