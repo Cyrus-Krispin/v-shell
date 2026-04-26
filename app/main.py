@@ -21,9 +21,12 @@ def main():
     while True:
 
         user_input = input("$ ")
-        user_input = shlex.split(user_input)
-        command = user_input[0]
+        command, *args = shlex.split(user_input)
         path = is_executable(command)
+        
+        if ">" in args or "1>" in args:
+            os.system(user_input)
+            continue
 
         match command:
 
@@ -31,10 +34,10 @@ def main():
                 sys.exit()
 
             case "echo":
-                sys.stdout.write(" ".join(user_input[1:]) + "\n")
+                sys.stdout.write(" ".join(args) + "\n")
                 
             case "type":
-                for val in user_input[1:]: 
+                for val in args: 
                     if val in builtin:
                         sys.stdout.write(val + " is a shell builtin" + "\n")
                         continue
@@ -47,19 +50,19 @@ def main():
                         sys.stdout.write(val + ": not found" + "\n")
 
             case _ if path:
-                subprocess.run([command] + user_input[1:]) 
+                subprocess.run([command] + args) 
 
             case "pwd":
                 sys.stdout.write(os.getcwd() + "\n")
  
             case "cd":
                 if user_input[1]:
-                    if user_input[1] == "~":
+                    if args[0] == "~":
                         os.chdir(os.getenv('HOME'))
-                    elif os.path.isdir(user_input[1]):
-                        os.chdir(user_input[1])
+                    elif os.path.isdir(args[0]):
+                        os.chdir(args[0])
                     else:
-                        sys.stdout.write("cd: " + user_input[1] + ": No such file or directory" + "\n") 
+                        sys.stdout.write("cd: " + args[0] + ": No such file or directory" + "\n") 
                 
             case _:
                 sys.stdout.write(command + ": command not found" + "\n")
