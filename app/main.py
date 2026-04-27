@@ -24,7 +24,7 @@ def main():
         command, *args = shlex.split(user_input)
         path = is_executable(command)
         
-        if ">" in args or "1>" in args:
+        if ">" in args or "1>" in args or "2>" in args:
             os.system(user_input)
             continue
 
